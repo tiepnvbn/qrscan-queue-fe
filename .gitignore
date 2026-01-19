@@ -13,6 +13,10 @@ Thumbs.db
 # Env
 .env
 .env.*
+!.env.example
+
+# Netlify
+.netlify/
 
 # VS Code
 .vscode/

@@ -10,12 +10,21 @@ Frontend for QR queue system.
 
 ## Scaffold (run on a machine where npm works)
 
+This repo already contains a full Vite + React + TypeScript + Tailwind scaffold.
+
+### Install + run
+
 ```powershell
-npm create vite@latest . -- --template react-ts
+cd .\qrscan-queue-fe
 npm install
-npm install react-router-dom @microsoft/signalr
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm run dev
+```
+
+### Build
+
+```powershell
+npm run build
+npm run preview
 ```
 
 ## Required routes / pages
@@ -45,6 +54,9 @@ npx tailwindcss init -p
 Configure API base URL via env:
 - `VITE_API_BASE_URL=https://<render-backend-host>`
 
+Optional external feedback form link:
+- `VITE_FEEDBACK_MORE_URL=https://...`
+
 SignalR hub is at:
 - `${VITE_API_BASE_URL}/hubs/queue`
 
@@ -66,4 +78,6 @@ Events:
 Expected settings:
 - Build command: `npm run build`
 - Publish directory: `dist`
-- SPA routing: add Netlify redirect rule (to be added when Vite scaffold exists)
+
+SPA routing:
+- This project includes `public/_redirects` with `/* /index.html 200`.
