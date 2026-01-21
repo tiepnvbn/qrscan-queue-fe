@@ -37,7 +37,7 @@ export default function StaffRoomPage() {
 
     let isMounted = true
     let lastSignalRUpdate = Date.now()
-    let refreshTimer: NodeJS.Timeout | null = null
+    let refreshTimer: number | null = null
 
     const safeRefresh = async () => {
       if (!isMounted) return
