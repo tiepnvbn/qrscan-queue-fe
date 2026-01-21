@@ -45,25 +45,52 @@ export default function MyTicketPage() {
     if (!siteSlug || !roomSlug || !ticketId) return
 
     storage.setTicketId(siteSlug, roomSlug, ticketId)
-    void refresh()
+    
+    let isMounted = true
+    let lastSignalRUpdate = Date.now()
+    let refreshTimer: NodeJS.Timeout | null = null
+
+    const safeRefresh = async () => {
+      if (!isMounted) return
+      await refresh()
+    }
+
+    void safeRefresh()
+
+    // Smart polling: only call API if no SignalR updates for 30s (failsafe)
+    refreshTimer = setInterval(() => {
+      if (!isMounted) return
+      
+      const timeSinceLastUpdate = Date.now() - lastSignalRUpdate
+      if (timeSinceLastUpdate > 30000) {
+        lastSignalRUpdate = Date.now() // Reset timer after API call
+        void safeRefresh()
+      }
+    }, 10000)
 
     const hub = getQueueHub()
     let unsub: (() => void) | null = null
 
     ;(async () => {
       try {
+        await hub.start()
+        console.log('[MyTicket] SignalR connected, joining room:', siteSlug, roomSlug)
         await hub.joinRoom(siteSlug, roomSlug)
         unsub = hub.onQueueUpdated((payload) => {
           if (payload.siteSlug === siteSlug && payload.roomSlug === roomSlug) {
-            void refresh()
+            console.log('[MyTicket] 🔥 SignalR update received')
+            lastSignalRUpdate = Date.now()
+            void safeRefresh()
           }
         })
-      } catch {
-        // ignore
+      } catch (err) {
+        console.error('[MyTicket] SignalR connection failed:', err)
       }
     })()
 
     return () => {
+      isMounted = false
+      if (refreshTimer) clearInterval(refreshTimer)
       if (unsub) unsub()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

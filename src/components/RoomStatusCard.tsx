@@ -45,7 +45,7 @@ export default function RoomStatusCard({
         <div className="text-right text-sm text-slate-600">
           <div>Thời gian: {serviceMinutes} phút/lượt</div>
           <div>Đang chờ: {status.waitingCount}</div>
-          <div>Số tiếp theo để lấy: {status.nextToTakeNumber}</div>
+          <div>Số tiếp theo để lấy: {status.nextToTakeDisplayNumber}</div>
           <div>
             Ước tính đến lượt mới: ~{estForNewTicketMinutes} phút (khoảng {estForNewTicketTime})
           </div>
@@ -55,17 +55,17 @@ export default function RoomStatusCard({
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs uppercase tracking-wide text-slate-500">Đang phục vụ</div>
-          <div className="mt-1 text-3xl font-bold">{status.currentNumber ?? '—'}</div>
+          <div className="mt-1 text-3xl font-bold">{status.currentDisplayNumber ?? '—'}</div>
         </div>
         <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs uppercase tracking-wide text-slate-500">Sắp gọi</div>
-          <div className="mt-1 text-3xl font-bold">{status.nextNumber ?? '—'}</div>
+          <div className="mt-1 text-3xl font-bold">{status.nextDisplayNumber ?? '—'}</div>
         </div>
       </div>
 
       {myTicket ? (
         <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3">
-          <div className="text-sm font-semibold text-blue-900">Vé của tôi #{myTicket.number}</div>
+          <div className="text-sm font-semibold text-blue-900">Vé của tôi {myTicket.displayNumber}</div>
           <div className="mt-1 text-sm text-blue-900">
             Còn trước: {myTicket.aheadCount} • Ước tính: {myTicket.estimatedWaitMinutes} phút • Dự kiến phục vụ:{' '}
             <span className="font-mono">{formatHHmm(myTicket.estimatedServeTime)}</span>

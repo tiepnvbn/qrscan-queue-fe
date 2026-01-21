@@ -35,7 +35,34 @@ export default function StaffRoomPage() {
   useEffect(() => {
     if (!siteSlug || !roomSlug) return
 
-    void refresh()
+    let isMounted = true
+    let lastSignalRUpdate = Date.now()
+    let refreshTimer: NodeJS.Timeout | null = null
+
+    const safeRefresh = async () => {
+      if (!isMounted) return
+      console.log('[StaffRoom] API call triggered')
+      await refresh()
+    }
+
+    console.log('[StaffRoom] Initial load')
+    void safeRefresh()
+
+    // Smart polling: only call API if no SignalR updates for 30s (failsafe)
+    refreshTimer = setInterval(() => {
+      if (!isMounted) return
+      
+      const timeSinceLastUpdate = Date.now() - lastSignalRUpdate
+      console.log(`[StaffRoom] Polling check: ${Math.round(timeSinceLastUpdate/1000)}s since last SignalR update`)
+      
+      if (timeSinceLastUpdate > 30000) {
+        console.log('[StaffRoom] ⚠️ Failsafe triggered - calling API')
+        lastSignalRUpdate = Date.now() // Reset timer after API call
+        void safeRefresh()
+      } else {
+        console.log('[StaffRoom] ✅ Skip API call - SignalR active')
+      }
+    }, 5000)
 
     const hub = getQueueHub()
     let unsub: (() => void) | null = null
@@ -45,7 +72,9 @@ export default function StaffRoomPage() {
         await hub.joinRoom(siteSlug, roomSlug)
           unsub = hub.onQueueUpdated((payload) => {
             if (payload.siteSlug === siteSlug && payload.roomSlug === roomSlug) {
-              void refresh()
+              console.log('[StaffRoom] 🔥 SignalR update received')
+              lastSignalRUpdate = Date.now()
+              void safeRefresh()
             }
           })
       } catch {
@@ -54,6 +83,8 @@ export default function StaffRoomPage() {
     })()
 
     return () => {
+      isMounted = false
+      if (refreshTimer) clearInterval(refreshTimer)
       if (unsub) unsub()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -30,11 +30,11 @@ function RoomTile({ siteSlug, room }: { siteSlug: string; room: SiteRoomStatusDt
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs uppercase tracking-wide text-slate-500">Đang phục vụ</div>
-          <div className="mt-1 text-3xl font-bold">{room.currentNumber ?? '—'}</div>
+          <div className="mt-1 text-3xl font-bold">{room.currentDisplayNumber ?? '—'}</div>
         </div>
         <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs uppercase tracking-wide text-slate-500">Sắp gọi</div>
-          <div className="mt-1 text-3xl font-bold">{room.nextNumber ?? '—'}</div>
+          <div className="mt-1 text-3xl font-bold">{room.nextDisplayNumber ?? '—'}</div>
         </div>
       </div>
 
@@ -80,23 +80,51 @@ export default function TvSitePage() {
   useEffect(() => {
     if (!siteSlug) return
 
-    void refresh()
+    let isMounted = true
+    let lastSignalRUpdate = Date.now()
+    let refreshTimer: NodeJS.Timeout | null = null
+
+    const safeRefresh = async () => {
+      if (!isMounted) return
+      await refresh()
+    }
+
+    void safeRefresh()
+
+    // Smart polling: only call API if no SignalR updates for 30s
+    refreshTimer = setInterval(() => {
+      if (!isMounted) return
+      
+      const timeSinceLastUpdate = Date.now() - lastSignalRUpdate
+      
+      // Only poll if we haven't received SignalR updates for 30+ seconds (failsafe)
+      if (timeSinceLastUpdate > 30000) {        lastSignalRUpdate = Date.now() // Reset timer after API call        void safeRefresh()
+      }
+    }, 5000)
 
     const hub = getQueueHub()
     let unsub: (() => void) | null = null
 
     ;(async () => {
       try {
+        await hub.start()
         await hub.joinSite(siteSlug)
         unsub = hub.onQueueUpdated((payload) => {
-          if (payload.siteSlug === siteSlug) void refresh()
+          // TvSitePage shows all rooms in a site, so update on any room change
+          if (payload.siteSlug === siteSlug) {
+            console.log('[TvSite] 🔥 SignalR update received for', payload.roomSlug || 'site')
+            lastSignalRUpdate = Date.now()
+            void safeRefresh()
+          }
         })
-      } catch {
-        // ignore
+      } catch (err) {
+        console.error('[TvSite] SignalR connection failed:', err)
       }
     })()
 
     return () => {
+      isMounted = false
+      if (refreshTimer) clearInterval(refreshTimer)
       if (unsub) unsub()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

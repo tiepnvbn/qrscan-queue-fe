@@ -23,8 +23,11 @@ export interface RoomStatusDto {
   serviceDate: ServiceDate
   serviceMinutes: number
   currentNumber: number | null
+  currentDisplayNumber: string | null
   nextNumber: number | null
+  nextDisplayNumber: string | null
   nextToTakeNumber: number
+  nextToTakeDisplayNumber: string
   waitingCount: number
   now: string // ISO
 }
@@ -32,6 +35,7 @@ export interface RoomStatusDto {
 export interface MyTicketDto {
   ticketId: string
   number: number
+  displayNumber: string
   status: TicketStatus
   aheadCount: number
   estimatedWaitMinutes: number
@@ -73,8 +77,11 @@ export interface SiteRoomStatusDto {
   serviceDate: ServiceDate
   serviceMinutes: number
   currentNumber: number | null
+  currentDisplayNumber: string | null
   nextNumber: number | null
+  nextDisplayNumber: string | null
   nextToTakeNumber: number
+  nextToTakeDisplayNumber: string
   waitingCount: number
   now: string // ISO
 }

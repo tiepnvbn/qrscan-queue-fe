@@ -49,25 +49,52 @@ export default function CustomerRoomPage() {
   useEffect(() => {
     if (!siteSlug || !roomSlug) return
 
-    void refresh()
+    let isMounted = true
+    let lastSignalRUpdate = Date.now()
+    let refreshTimer: NodeJS.Timeout | null = null
+
+    const safeRefresh = async () => {
+      if (!isMounted) return
+      await refresh()
+    }
+
+    void safeRefresh()
+
+    // Smart polling: only call API if no SignalR updates for 30s (failsafe)
+    refreshTimer = setInterval(() => {
+      if (!isMounted) return
+      
+      const timeSinceLastUpdate = Date.now() - lastSignalRUpdate
+      if (timeSinceLastUpdate > 30000) {
+        lastSignalRUpdate = Date.now() // Reset timer after API call
+        void safeRefresh()
+      }
+    }, 10000)
 
     const hub = getQueueHub()
     let unsub: (() => void) | null = null
 
     ;(async () => {
       try {
+        await hub.start()
+        console.log('[CustomerRoom] SignalR connected, joining room:', siteSlug, roomSlug)
         await hub.joinRoom(siteSlug, roomSlug)
         unsub = hub.onQueueUpdated((payload) => {
           if (payload.siteSlug === siteSlug && payload.roomSlug === roomSlug) {
-            void refresh()
+            console.log('[CustomerRoom] 🔥 SignalR update received')
+            lastSignalRUpdate = Date.now()
+            void safeRefresh()
           }
         })
-      } catch {
+      } catch (err) {
+        console.error('[CustomerRoom] SignalR connection failed:', err)
         // If SignalR fails, page still works via manual refresh.
       }
     })()
 
     return () => {
+      isMounted = false
+      if (refreshTimer) clearInterval(refreshTimer)
       if (unsub) unsub()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

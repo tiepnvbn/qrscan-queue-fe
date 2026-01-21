@@ -30,10 +30,12 @@ class QueueHubClient {
 
     // Backend broadcasts lightweight notifications; clients re-fetch state over HTTP.
     conn.on('QueueUpdated', (payload: QueueUpdatedPayload) => {
+      console.log('[QueueHub] Received QueueUpdated:', payload)
       this.queueListeners.forEach((fn) => fn(payload))
     })
 
     conn.onreconnected(async () => {
+      console.log('[QueueHub] Reconnected, rejoining groups')
       // Resubscribe on reconnect
       for (const roomKey of this.joinedRooms) {
         const [siteSlug, roomSlug] = roomKey.split('|')
@@ -62,9 +64,34 @@ class QueueHubClient {
   async start(): Promise<void> {
     const conn = this.ensureConnection()
     if (conn.state === HubConnectionState.Connected) return
-    if (conn.state === HubConnectionState.Connecting) return
+    
+    // Wait for connection if it's in progress
+    if (conn.state === HubConnectionState.Connecting) {
+      console.log('[QueueHub] Connection in progress, waiting...')
+      // Wait for state change
+      await new Promise<void>((resolve, reject) => {
+        const checkState = setInterval(() => {
+          if (conn.state === HubConnectionState.Connected) {
+            clearInterval(checkState)
+            resolve()
+          } else if (conn.state === HubConnectionState.Disconnected) {
+            clearInterval(checkState)
+            reject(new Error('Connection failed'))
+          }
+        }, 100)
+        
+        // Timeout after 10 seconds
+        setTimeout(() => {
+          clearInterval(checkState)
+          reject(new Error('Connection timeout'))
+        }, 10000)
+      })
+      return
+    }
 
+    console.log('[QueueHub] Starting connection...')
     await conn.start()
+    console.log('[QueueHub] Connected successfully')
   }
 
   onQueueUpdated(listener: QueueListener) {
@@ -75,15 +102,19 @@ class QueueHubClient {
   async joinRoom(siteSlug: string, roomSlug: string): Promise<void> {
     await this.start()
     const conn = this.ensureConnection()
+    console.log('[QueueHub] Invoking JoinRoom:', siteSlug, roomSlug)
     await conn.invoke('JoinRoom', siteSlug, roomSlug)
     this.joinedRooms.add(`${siteSlug}|${roomSlug}`)
+    console.log('[QueueHub] Joined room successfully')
   }
 
   async joinSite(siteSlug: string): Promise<void> {
     await this.start()
     const conn = this.ensureConnection()
+    console.log('[QueueHub] Invoking JoinSite:', siteSlug)
     await conn.invoke('JoinSite', siteSlug)
     this.joinedSites.add(siteSlug)
+    console.log('[QueueHub] Joined site successfully')
   }
 }
 

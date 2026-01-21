@@ -65,8 +65,7 @@ Frontend should call:
 - `JoinRoom(siteSlug, roomSlug)` for customer + staff
 
 Events:
-- `roomUpdated` -> payload matches backend `GET /api/public/sites/{siteSlug}/rooms/{roomSlug}/status`
-- `siteUpdated` -> payload matches backend `GET /api/tv/sites/{siteSlug}/status`
+- `QueueUpdated` -> payload `{ siteSlug, roomSlug }` (frontend re-fetches state via HTTP)
 
 ## Feedback flow
 - After completion, show 1–5 stars + optional comment
@@ -78,6 +77,8 @@ Events:
 Expected settings:
 - Build command: `npm run build`
 - Publish directory: `dist`
+
+This repo also includes `netlify.toml` with these settings.
 
 SPA routing:
 - This project includes `public/_redirects` with `/* /index.html 200`.
