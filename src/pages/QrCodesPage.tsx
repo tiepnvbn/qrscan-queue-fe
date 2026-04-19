@@ -37,7 +37,7 @@ export default function QrCodesPage() {
     <PageShell title="Mã QR">
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-2 print:hidden">
-          <Button onClick={() => window.print()} disabled={sites.length === 0}>
+          <Button variant="gold" onClick={() => window.print()} disabled={sites.length === 0}>
             In
           </Button>
           <Button
@@ -57,7 +57,7 @@ export default function QrCodesPage() {
           >
             Tải lại
           </Button>
-          <div className="text-sm text-slate-600">
+          <div className="text-sm text-muted">
             Các mã QR này sẽ mở trang khách cho từng phòng.
           </div>
         </div>
@@ -76,10 +76,10 @@ export default function QrCodesPage() {
             <div key={site.siteId} className="space-y-3">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <div className="text-sm text-slate-500">{site.siteSlug}</div>
-                  <div className="text-xl font-semibold">{site.siteName}</div>
+                  <div className="text-xs text-muted">{site.siteSlug}</div>
+                  <div className="text-xl font-bold text-on-page">{site.siteName}</div>
                 </div>
-                <div className="text-sm text-slate-600 print:hidden">Phòng: {site.rooms.length}</div>
+                <div className="text-sm text-muted print:hidden">Phòng: {site.rooms.length}</div>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -89,18 +89,18 @@ export default function QrCodesPage() {
                     <Card key={room.roomId}>
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <div className="text-sm text-slate-500">{site.siteSlug} / {room.roomSlug}</div>
-                          <div className="font-semibold">{room.roomName}</div>
-                          <div className="text-xs text-slate-500">{room.serviceMinutes} phút/lượt</div>
+                          <div className="text-xs text-muted">{site.siteSlug} / {room.roomSlug}</div>
+                          <div className="font-bold">{room.roomName}</div>
+                          <div className="text-xs text-on-card/60">{room.serviceMinutes} phút/lượt</div>
                         </div>
-                        <div className="text-right text-xs text-slate-500 print:hidden">Quét</div>
+                        <div className="text-right text-xs text-gold print:hidden">Quét →</div>
                       </div>
 
-                      <div className="mt-3 flex items-center justify-center">
+                      <div className="mt-3 flex items-center justify-center rounded-lg bg-white p-2">
                         <QRCodeCanvas value={url} size={180} includeMargin />
                       </div>
 
-                      <div className="mt-3 break-all text-center font-mono text-[10px] text-slate-600">{url}</div>
+                      <div className="mt-3 break-all text-center font-mono text-[10px] text-muted">{url}</div>
                     </Card>
                   )
                 })}

@@ -1,4 +1,9 @@
 const CUSTOMER_ID_KEY = 'qrqueue:customerId'
+const CUSTOMER_NAME_KEY = 'qrqueue:customerName'
+const STAFF_TOKEN_KEY = 'qrqueue:staffToken'
+const STAFF_NAME_KEY = 'qrqueue:staffName'
+const STAFF_SITE_SLUG_KEY = 'qrqueue:staffSiteSlug'
+const STAFF_SITE_NAME_KEY = 'qrqueue:staffSiteName'
 
 function ticketKey(siteSlug: string, roomSlug: string) {
   return `qrqueue:ticketId:${siteSlug}:${roomSlug}`
@@ -15,6 +20,16 @@ export const storage = {
     localStorage.removeItem(CUSTOMER_ID_KEY)
   },
 
+  getCustomerName(): string | null {
+    return localStorage.getItem(CUSTOMER_NAME_KEY)
+  },
+  setCustomerName(name: string) {
+    localStorage.setItem(CUSTOMER_NAME_KEY, name)
+  },
+  clearCustomerName() {
+    localStorage.removeItem(CUSTOMER_NAME_KEY)
+  },
+
   getTicketId(siteSlug: string, roomSlug: string): string | null {
     return localStorage.getItem(ticketKey(siteSlug, roomSlug))
   },
@@ -23,5 +38,42 @@ export const storage = {
   },
   clearTicketId(siteSlug: string, roomSlug: string) {
     localStorage.removeItem(ticketKey(siteSlug, roomSlug))
+  },
+
+  // ── Staff storage ──────────────────────────────────────────────
+
+  getStaffToken(): string | null {
+    return localStorage.getItem(STAFF_TOKEN_KEY)
+  },
+  setStaffToken(token: string) {
+    localStorage.setItem(STAFF_TOKEN_KEY, token)
+  },
+
+  getStaffName(): string | null {
+    return localStorage.getItem(STAFF_NAME_KEY)
+  },
+  setStaffName(name: string) {
+    localStorage.setItem(STAFF_NAME_KEY, name)
+  },
+
+  getStaffSiteSlug(): string | null {
+    return localStorage.getItem(STAFF_SITE_SLUG_KEY)
+  },
+  setStaffSiteSlug(slug: string) {
+    localStorage.setItem(STAFF_SITE_SLUG_KEY, slug)
+  },
+
+  getStaffSiteName(): string | null {
+    return localStorage.getItem(STAFF_SITE_NAME_KEY)
+  },
+  setStaffSiteName(name: string) {
+    localStorage.setItem(STAFF_SITE_NAME_KEY, name)
+  },
+
+  clearStaff() {
+    localStorage.removeItem(STAFF_TOKEN_KEY)
+    localStorage.removeItem(STAFF_NAME_KEY)
+    localStorage.removeItem(STAFF_SITE_SLUG_KEY)
+    localStorage.removeItem(STAFF_SITE_NAME_KEY)
   },
 }

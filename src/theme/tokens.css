@@ -1,0 +1,28 @@
+/* Phase 2 — Dark Green Theme (Đen Xanh) */
+/* CSS Custom Properties for theming. Add [data-theme="theme-2"] block for second theme later. */
+
+:root,
+[data-theme="dark-green"] {
+  /* Backgrounds */
+  --bg-page: #162114;
+  --bg-card: #FFEACF;
+  --bg-card-dark: #2A4123;
+  --bg-badge: #FFF8CA;
+  --bg-surface: #FFFFFF;
+
+  /* Borders */
+  --border-gold: #FFEDA1;
+  --border-gold-alt: #FFEFA4;
+  --border-light: #DFDFDF;
+
+  /* Text */
+  --text-primary: #FFEACF;
+  --text-on-card: #162114;
+  --text-muted: #9D9D9D;
+  --text-on-dark-btn: #FFEACF;
+
+  /* Accent */
+  --accent-dark: #3D1508;
+  --color-primary: #2A4123;
+  --color-danger: #B91C1C;
+}

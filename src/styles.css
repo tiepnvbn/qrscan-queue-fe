@@ -1,3 +1,5 @@
+@import './theme/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,11 +14,16 @@ body {
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Roboto Serif', Georgia, serif;
 }
 
 a {
-  @apply text-blue-700 hover:text-blue-800;
+  color: var(--border-gold);
+}
+a:hover {
+  color: var(--bg-badge);
 }
 
 @media print {
@@ -31,4 +38,17 @@ a {
   footer {
     display: none !important;
   }
+}
+
+/* Title style from Figma — MonteCarlo font with gold gradient + drop shadow */
+.title-fancy {
+  font-family: 'MonteCarlo', cursive;
+  font-weight: 400;
+  font-size: 60px;
+  line-height: 100%;
+  background: linear-gradient(180deg, rgba(255, 225, 109, 1), rgba(255, 242, 194, 1), rgba(251, 204, 40, 1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0px 5.1px 5.1px rgba(0, 0, 0, 0.25));
 }

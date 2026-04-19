@@ -42,35 +42,35 @@ export default function RoomStatusCard({
           </div>
         </div>
 
-        <div className="text-right text-sm text-slate-600">
+        <div className="text-right text-xs text-on-card/70">
           <div>Thời gian: {serviceMinutes} phút/lượt</div>
           <div>Đang chờ: {status.waitingCount}</div>
-          <div>Số tiếp theo để lấy: {status.nextToTakeDisplayNumber}</div>
+          <div>Số tiếp theo: {status.nextToTakeDisplayNumber}</div>
           <div>
-            Ước tính đến lượt mới: ~{estForNewTicketMinutes} phút (khoảng {estForNewTicketTime})
+            Ước tính: ~{estForNewTicketMinutes}p ({estForNewTicketTime})
           </div>
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Đang phục vụ</div>
-          <div className="mt-1 text-3xl font-bold">{status.currentDisplayNumber ?? '—'}</div>
+        <div className="rounded-lg border border-gold/30 bg-card-dark p-3">
+          <div className="text-xs uppercase tracking-wide text-muted">Đang phục vụ</div>
+          <div className="mt-1 text-3xl font-bold text-on-page">{status.currentDisplayNumber ?? '—'}</div>
         </div>
-        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Sắp gọi</div>
-          <div className="mt-1 text-3xl font-bold">{status.nextDisplayNumber ?? '—'}</div>
+        <div className="rounded-lg border border-gold/30 bg-badge p-3">
+          <div className="text-xs uppercase tracking-wide text-on-card/70">Sắp gọi</div>
+          <div className="mt-1 text-3xl font-bold text-on-card">{status.nextDisplayNumber ?? '—'}</div>
         </div>
       </div>
 
       {myTicket ? (
-        <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3">
-          <div className="text-sm font-semibold text-blue-900">Vé của tôi {myTicket.displayNumber}</div>
-          <div className="mt-1 text-sm text-blue-900">
-            Còn trước: {myTicket.aheadCount} • Ước tính: {myTicket.estimatedWaitMinutes} phút • Dự kiến phục vụ:{' '}
+        <div className="mt-4 rounded-lg border-2 border-gold bg-badge/30 p-3">
+          <div className="text-sm font-bold text-on-card">Vé của tôi: {myTicket.displayNumber}</div>
+          <div className="mt-1 text-sm text-on-card/80">
+            Còn trước: {myTicket.aheadCount} • Ước tính: {myTicket.estimatedWaitMinutes} phút • Phục vụ lúc:{' '}
             <span className="font-mono">{formatHHmm(myTicket.estimatedServeTime)}</span>
           </div>
-          <div className="mt-1 text-xs text-blue-900/80">Trạng thái: {ticketStatusVi(myTicket.status)}</div>
+          <div className="mt-1 text-xs text-on-card/60">Trạng thái: {ticketStatusVi(myTicket.status)}</div>
         </div>
       ) : null}
     </Card>

@@ -115,13 +115,17 @@ export default function MyTicketPage() {
     navigate(`/s/${siteSlug}/r/${roomSlug}`)
   }
 
+  const myTicket = data?.myTicket
+  const isServing = myTicket?.status === 'Serving'
+  const isWaiting = myTicket?.status === 'Waiting'
+
   if (!ticketId) {
     return (
       <PageShell title="Vé của tôi">
         <Alert variant="error">Thiếu ticketId. Vui lòng quay lại và lấy số.</Alert>
         <div className="mt-3">
-          <Link to={`/s/${siteSlug}/r/${roomSlug}`} className="text-sm">
-            Quay lại phòng
+          <Link to={`/s/${siteSlug}/r/${roomSlug}`} className="text-sm text-gold">
+            ← Quay lại phòng
           </Link>
         </div>
       </PageShell>
@@ -133,13 +137,41 @@ export default function MyTicketPage() {
       <div className="space-y-4">
         {error ? <Alert variant="error">{error}</Alert> : null}
 
+        {/* Ticket number badge */}
+        {myTicket ? (
+          <div className="flex flex-col items-center py-6">
+            <div className="text-xs text-muted uppercase tracking-widest">Số thứ tự của bạn</div>
+            <div className="mt-2 rounded-2xl border-2 border-gold bg-badge px-8 py-4">
+              <div className="text-5xl font-bold text-on-card">{myTicket.displayNumber}</div>
+            </div>
+
+            {isServing ? (
+              <div className="mt-4 text-center">
+                <div className="text-xl font-bold text-gold">Đã đến lượt của bạn!</div>
+                <div className="mt-1 text-sm text-on-page/80">Vui lòng di chuyển đến phòng chụp</div>
+              </div>
+            ) : isWaiting ? (
+              <div className="mt-4 text-center">
+                <div className="text-sm text-on-page/80">
+                  Còn <span className="font-bold text-gold">{myTicket.aheadCount}</span> người trước bạn
+                </div>
+                <div className="mt-1 text-sm text-muted">
+                  Thời gian dự kiến: ~{myTicket.estimatedWaitMinutes} phút
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
         {data ? <RoomStatusCard title={`${siteSlug} / ${roomSlug}`} status={data.status} myTicket={data.myTicket} /> : null}
 
-        <Card>
+        <Card variant="dark">
           <div className="flex flex-wrap items-center gap-2">
-            <Button onClick={handleComplete} disabled={loading}>
-              Hoàn tất (khách)
-            </Button>
+            {isServing ? (
+              <Button variant="gold" onClick={handleComplete} disabled={loading}>
+                Hoàn tất
+              </Button>
+            ) : null}
             <Button variant="secondary" onClick={refresh} disabled={loading}>
               Làm mới
             </Button>
@@ -147,14 +179,14 @@ export default function MyTicketPage() {
               Xóa vé đã lưu
             </Button>
             <Link
-              className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+              className="inline-flex items-center justify-center rounded-lg border border-gold/40 bg-card-dark px-4 py-2.5 text-sm font-medium text-on-page hover:bg-primary/80"
               to={`/s/${siteSlug}/r/${roomSlug}`}
             >
-              Quay lại phòng
+              ← Quay lại phòng
             </Link>
           </div>
 
-          <div className="mt-3 text-xs text-slate-500">
+          <div className="mt-3 text-xs text-muted">
             Vé: <span className="font-mono">{ticketId}</span>
           </div>
         </Card>

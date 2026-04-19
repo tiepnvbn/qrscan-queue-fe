@@ -46,48 +46,31 @@ export default function FeedbackPage() {
       <PageShell title="Đánh giá">
         <Alert variant="error">Thiếu ticketId.</Alert>
         <div className="mt-3">
-          <Link to={backLink} className="text-sm">
-            Quay lại
+          <Link to={backLink} className="text-sm text-gold">
+            ← Quay lại
           </Link>
         </div>
       </PageShell>
     )
   }
 
-  return (
-    <PageShell title="Đánh giá">
-      <div className="space-y-4">
-        {error ? <Alert variant="error">{error}</Alert> : null}
-        {done ? <Alert>Cảm ơn! Đánh giá của bạn đã được gửi.</Alert> : null}
-
-        <Card>
-          <div className="text-sm text-slate-600">Vé</div>
-          <div className="font-mono text-xs">{ticketId}</div>
-
-          <div className="mt-4">
-            <div className="mb-2 text-sm font-semibold">Đánh giá trải nghiệm</div>
-            <StarsInput value={stars} onChange={setStars} />
-          </div>
-
-          <div className="mt-4">
-            <div className="mb-2 text-sm font-semibold">Góp ý (tùy chọn)</div>
-            <TextArea rows={4} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Bạn muốn chia sẻ gì không?" />
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button onClick={submit} disabled={loading || done}>
-              Gửi
-            </Button>
+  if (done) {
+    return (
+      <PageShell title="Cảm ơn!">
+        <div className="flex flex-col items-center py-12 text-center">
+          <div className="text-5xl font-bold italic text-on-page tracking-wide">LL Photobooth</div>
+          <div className="mt-6 text-xl font-bold text-gold">Cảm ơn bạn!</div>
+          <div className="mt-2 text-sm text-on-page/80">Đánh giá của bạn đã được gửi thành công.</div>
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+              className="inline-flex items-center justify-center rounded-lg border border-gold/40 bg-card-dark px-4 py-2.5 text-sm font-medium text-on-page hover:bg-primary/80"
               to={backLink}
             >
-              Quay lại
+              Quay lại phòng
             </Link>
-
             {config.feedbackMoreUrl ? (
               <a
-                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-lg border border-gold bg-badge px-4 py-2.5 text-sm font-medium text-on-card hover:bg-gold"
                 href={config.feedbackMoreUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -95,6 +78,43 @@ export default function FeedbackPage() {
                 Xem thêm
               </a>
             ) : null}
+          </div>
+        </div>
+      </PageShell>
+    )
+  }
+
+  return (
+    <PageShell title="Đánh giá dịch vụ">
+      <div className="space-y-4">
+        {error ? <Alert variant="error">{error}</Alert> : null}
+
+        <div className="py-4 text-center">
+          <div className="text-xl font-bold text-on-page">Đánh giá dịch vụ</div>
+          <div className="mt-1 text-sm text-muted">Chia sẻ trải nghiệm của bạn</div>
+        </div>
+
+        <Card>
+          <div className="mt-2">
+            <div className="mb-3 text-sm font-bold">Bạn đánh giá bao nhiêu sao?</div>
+            <StarsInput value={stars} onChange={setStars} />
+          </div>
+
+          <div className="mt-5">
+            <div className="mb-2 text-sm font-bold">Góp ý (tùy chọn)</div>
+            <TextArea rows={4} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Bạn muốn chia sẻ gì không?" />
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Button variant="gold" onClick={submit} disabled={loading}>
+              Gửi đánh giá
+            </Button>
+            <Link
+              className="inline-flex items-center justify-center rounded-lg border border-gold/40 bg-card-dark px-4 py-2.5 text-sm font-medium text-on-page hover:bg-primary/80"
+              to={backLink}
+            >
+              Quay lại
+            </Link>
           </div>
         </Card>
       </div>

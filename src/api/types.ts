@@ -6,11 +6,13 @@ export type ServiceDate = string // YYYY-MM-DD
 
 export interface CustomerLoginRequest {
   phone: string
-  dateOfBirth: string // YYYY-MM-DD
+  name?: string | null
+  dateOfBirth?: string | null // YYYY-MM-DD (legacy, optional)
 }
 
 export interface CustomerLoginResponse {
   customerId: string
+  name: string | null
   points: number
   freeCredits: number
   tier: CustomerTier
@@ -69,6 +71,44 @@ export interface FeedbackResponse {
   feedbackId: string
   ticketId: string
 }
+
+// ── Staff types ──────────────────────────────────────────────────
+
+export interface StaffLoginRequest {
+  phone: string
+  password: string
+}
+
+export interface StaffLoginResponse {
+  staffId: string
+  name: string | null
+  token: string
+  siteSlug: string
+  siteName: string
+}
+
+export interface StaffTicketDto {
+  ticketId: string
+  number: number
+  displayNumber: string
+  customerName: string | null
+  roomSlug: string
+  roomName: string
+  status: string
+  createdAt: string // ISO
+  calledAt: string | null // ISO
+  completedAt: string | null // ISO
+  serviceMinutes: number
+}
+
+export interface StaffTicketListResponse {
+  items: StaffTicketDto[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+// ── Shared ──
 
 export interface SiteRoomStatusDto {
   roomId: string

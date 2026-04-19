@@ -57,4 +57,10 @@ export const publicApi = {
       body: JSON.stringify(body),
     })
   },
+
+  async cancelTicket(ticketId: string): Promise<RoomStatusDto> {
+    return fetchJson(`${config.apiBaseUrl}/api/public/tickets/${ticketId}/cancel`, {
+      method: 'POST',
+    })
+  },
 }
