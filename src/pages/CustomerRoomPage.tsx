@@ -8,7 +8,6 @@ import { formatHHmm, safeNumber } from '../lib/time'
 import PageShell from '../ui/PageShell'
 import Alert from '../ui/Alert'
 import Button from '../ui/Button'
-import Card from '../ui/Card'
 import Input from '../ui/Input'
 import Label from '../ui/Label'
 import TextArea from '../ui/TextArea'
@@ -51,27 +50,6 @@ export default function CustomerRoomPage() {
   const [feedbackLoading, setFeedbackLoading] = useState(false)
 
   // ticketId is initialized from localStorage in useState above
-
-  async function refresh() {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await publicApi.getRoomStatus({ siteSlug, roomSlug, ticketId })
-      setData(res)
-      // Auto-detect phase from ticket status
-      if (res.myTicket) {
-        if (res.myTicket.status === 'Serving' && phase === 'waiting') {
-          setPhase('your-turn')
-        } else if (res.myTicket.status === 'Completed') {
-          setPhase('feedback')
-        }
-      }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Không tải được dữ liệu')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
     if (!siteSlug || !roomSlug) return

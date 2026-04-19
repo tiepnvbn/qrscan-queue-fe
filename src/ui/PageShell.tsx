@@ -9,7 +9,7 @@ const bgStyle: CSSProperties = {
   backgroundAttachment: 'fixed',
 }
 
-export default function PageShell({ title, children, className, style }: PropsWithChildren<{ title: string; className?: string; style?: CSSProperties }>) {
+export default function PageShell({ children, className, style }: PropsWithChildren<{ title?: string; className?: string; style?: CSSProperties }>) {
   return (
     <div className={`min-h-screen font-serif ${className ?? ''}`} style={{ ...bgStyle, ...style }}>
       <header className="border-b border-gold/30">

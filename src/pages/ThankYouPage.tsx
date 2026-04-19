@@ -1,9 +1,7 @@
-import { useParams } from 'react-router-dom'
 import PageShell from '../ui/PageShell'
 import logo from '../theme/logo.png'
 
 export default function ThankYouPage() {
-  const { siteSlug = '', roomSlug = '' } = useParams()
 
   return (
     <PageShell title="Cảm ơn">

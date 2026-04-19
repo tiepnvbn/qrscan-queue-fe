@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { QRCodeSVG } from 'qrcode.react'
 import type { SiteStatusDto, SiteRoomStatusDto } from '../api/types'
 import { tvApi } from '../api/tvApi'
 import { getQueueHub } from '../realtime/queueHub'
@@ -31,20 +30,6 @@ function RoomTile({ room }: { room: SiteRoomStatusDto }) {
       <div className="text-center text-sm text-on-page/80">
         Số tiếp theo: <span className="font-bold text-gold">{room.nextDisplayNumber ?? '—'}</span>
       </div>
-    </div>
-  )
-}
-
-function QrTile({ siteSlug }: { siteSlug: string }) {
-  const roomUrl = `${window.location.origin}/s/${encodeURIComponent(siteSlug)}/rooms`
-
-  return (
-    <div className="rounded-xl border border-gold/40 bg-card-dark p-4 space-y-3 flex flex-col items-center">
-      <div className="text-lg font-bold text-gold">Quét QR</div>
-      <div className="rounded-lg bg-card p-4">
-        <QRCodeSVG value={roomUrl} size={120} bgColor="#FFEACF" fgColor="#162114" />
-      </div>
-      <div className="text-xs text-muted">Để lấy số thứ tự</div>
     </div>
   )
 }

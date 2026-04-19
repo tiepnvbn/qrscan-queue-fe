@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { RoomStatusDto, SiteRoomStatusDto } from '../api/types'
+import type { SiteRoomStatusDto } from '../api/types'
 import { tvApi } from '../api/tvApi'
 import { addMinutes, formatHHmm, safeNumber } from '../lib/time'
 import { getRoomDisplayName, getRoomVietName } from '../lib/roomNames'

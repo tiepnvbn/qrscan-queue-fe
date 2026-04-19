@@ -34,7 +34,7 @@ const PAGE_SIZE = 20
 export default function StaffCustomerListPage() {
   const navigate = useNavigate()
   const { roomSlug } = useParams()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const siteSlug = storage.getStaffSiteSlug()
 
   const [tickets, setTickets] = useState<StaffTicketDto[]>([])
