@@ -13,6 +13,7 @@ import TvSitePage from './pages/TvSitePage'
 import FeedbackPage from './pages/FeedbackPage'
 import QrCodesPage from './pages/QrCodesPage'
 import NotFoundPage from './pages/NotFoundPage'
+import StaffGuard from './components/StaffGuard'
 
 export default function App() {
   return (
@@ -29,13 +30,13 @@ export default function App() {
 
       {/* Phase 2 Staff flow */}
       <Route path="/staff/login" element={<StaffLoginPage />} />
-      <Route path="/staff" element={<StaffDashboardPage />} />
-      <Route path="/staff/rooms" element={<StaffRoomListPage />} />
-      <Route path="/staff/tickets" element={<StaffCustomerListPage />} />
-      <Route path="/staff/tickets/:roomSlug" element={<StaffCustomerListPage />} />
+      <Route path="/staff" element={<StaffGuard><StaffDashboardPage /></StaffGuard>} />
+      <Route path="/staff/rooms" element={<StaffGuard><StaffRoomListPage /></StaffGuard>} />
+      <Route path="/staff/tickets" element={<StaffGuard><StaffCustomerListPage /></StaffGuard>} />
+      <Route path="/staff/tickets/:roomSlug" element={<StaffGuard><StaffCustomerListPage /></StaffGuard>} />
 
       {/* Phase 1 staff room (backward compatible) */}
-      <Route path="/staff/s/:siteSlug/r/:roomSlug" element={<StaffRoomPage />} />
+      <Route path="/staff/s/:siteSlug/r/:roomSlug" element={<StaffGuard><StaffRoomPage /></StaffGuard>} />
 
       <Route path="/tv/s/:siteSlug" element={<TvSitePage />} />
 
