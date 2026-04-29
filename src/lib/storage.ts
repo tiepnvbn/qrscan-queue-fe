@@ -4,6 +4,8 @@ const STAFF_TOKEN_KEY = 'qrqueue:staffToken'
 const STAFF_NAME_KEY = 'qrqueue:staffName'
 const STAFF_SITE_SLUG_KEY = 'qrqueue:staffSiteSlug'
 const STAFF_SITE_NAME_KEY = 'qrqueue:staffSiteName'
+const SESSION_TOKEN_KEY = 'qrqueue:sessionToken'
+const SESSION_SITE_SLUG_KEY = 'qrqueue:sessionSiteSlug'
 
 function ticketKey(siteSlug: string, roomSlug: string) {
   return `qrqueue:ticketId:${siteSlug}:${roomSlug}`
@@ -75,5 +77,24 @@ export const storage = {
     localStorage.removeItem(STAFF_NAME_KEY)
     localStorage.removeItem(STAFF_SITE_SLUG_KEY)
     localStorage.removeItem(STAFF_SITE_NAME_KEY)
+  },
+
+  // ── Customer session (QR-verified) ────────────────────────────
+
+  getSessionToken(): string | null {
+    return sessionStorage.getItem(SESSION_TOKEN_KEY)
+  },
+  setSessionToken(token: string) {
+    sessionStorage.setItem(SESSION_TOKEN_KEY, token)
+  },
+  getSessionSiteSlug(): string | null {
+    return sessionStorage.getItem(SESSION_SITE_SLUG_KEY)
+  },
+  setSessionSiteSlug(slug: string) {
+    sessionStorage.setItem(SESSION_SITE_SLUG_KEY, slug)
+  },
+  clearSession() {
+    sessionStorage.removeItem(SESSION_TOKEN_KEY)
+    sessionStorage.removeItem(SESSION_SITE_SLUG_KEY)
   },
 }

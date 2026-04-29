@@ -145,3 +145,47 @@ export interface SiteCatalogDto {
   siteName: string
   rooms: RoomCatalogDto[]
 }
+
+// ── Dynamic QR / Session types ──────────────────────────────────
+
+export interface VerifySiteTokenRequest {
+  token: string
+}
+
+export interface VerifySiteTokenResponse {
+  success: boolean
+  sessionToken: string | null
+  siteSlug: string | null
+  siteName: string | null
+  errorMessage: string | null
+}
+
+export interface SiteQrTokenDto {
+  token: string
+  qrUrl: string
+  expiresAt: string // ISO
+}
+
+export interface SessionValidateResponse {
+  valid: boolean
+  siteSlug?: string
+  dynamicQrEnabled: boolean
+}
+
+export interface TakeMultiRoomTicketRequest {
+  roomSlugs: string[]
+  customerId?: string | null
+  sessionToken?: string | null
+}
+
+export interface MultiRoomTicketResult {
+  ticketId: string
+  roomSlug: string
+  roomName: string
+  number: number
+  displayNumber: string
+}
+
+export interface TakeMultiRoomTicketResponse {
+  tickets: MultiRoomTicketResult[]
+}

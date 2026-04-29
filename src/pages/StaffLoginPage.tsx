@@ -28,7 +28,19 @@ export default function StaffLoginPage() {
       storage.setStaffSiteName(res.siteName)
       navigate('/staff')
     } catch (e: any) {
-      setError(e?.bodyText || e?.message || 'Đăng nhập thất bại')
+      // Parse structured error responses (IP whitelist, site mismatch)
+      let errorMsg = 'Đăng nhập thất bại'
+      if (e?.bodyText) {
+        try {
+          const parsed = JSON.parse(e.bodyText)
+          errorMsg = parsed.error ?? e.bodyText
+        } catch {
+          errorMsg = e.bodyText
+        }
+      } else if (e?.message) {
+        errorMsg = e.message
+      }
+      setError(errorMsg)
     } finally {
       setLoading(false)
     }

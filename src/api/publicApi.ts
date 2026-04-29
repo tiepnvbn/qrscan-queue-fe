@@ -10,7 +10,18 @@ import type {
   TakeTicketRequest,
   TakeTicketResponse,
   RoomStatusDto,
+  VerifySiteTokenRequest,
+  VerifySiteTokenResponse,
+  SiteQrTokenDto,
+  SessionValidateResponse,
+  TakeMultiRoomTicketRequest,
+  TakeMultiRoomTicketResponse,
 } from './types'
+
+function sessionHeaders(): Record<string, string> {
+  const token = sessionStorage.getItem('qrqueue:sessionToken')
+  return token ? { 'X-Session-Token': token } : {}
+}
 
 export const publicApi = {
   async listSites(): Promise<SiteCatalogDto[]> {
@@ -42,6 +53,18 @@ export const publicApi = {
     return fetchJson(`${config.apiBaseUrl}/api/public/sites/${args.siteSlug}/rooms/${args.roomSlug}/tickets`, {
       method: 'POST',
       body: JSON.stringify(args.body),
+      headers: { ...sessionHeaders() },
+    })
+  },
+
+  async takeMultiRoomTickets(args: {
+    siteSlug: string
+    body: TakeMultiRoomTicketRequest
+  }): Promise<TakeMultiRoomTicketResponse> {
+    return fetchJson(`${config.apiBaseUrl}/api/public/sites/${args.siteSlug}/tickets`, {
+      method: 'POST',
+      body: JSON.stringify(args.body),
+      headers: { ...sessionHeaders() },
     })
   },
 
@@ -61,6 +84,25 @@ export const publicApi = {
   async cancelTicket(ticketId: string): Promise<RoomStatusDto> {
     return fetchJson(`${config.apiBaseUrl}/api/public/tickets/${ticketId}/cancel`, {
       method: 'POST',
+    })
+  },
+
+  // ── Dynamic QR endpoints ──────────────────────────────────────
+
+  async getQrToken(siteSlug: string): Promise<SiteQrTokenDto> {
+    return fetchJson(`${config.apiBaseUrl}/api/public/sites/${siteSlug}/qr-token`)
+  },
+
+  async verifySiteToken(siteSlug: string, body: VerifySiteTokenRequest): Promise<VerifySiteTokenResponse> {
+    return fetchJson(`${config.apiBaseUrl}/api/public/sites/${siteSlug}/verify-token`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+
+  async validateSession(): Promise<SessionValidateResponse> {
+    return fetchJson(`${config.apiBaseUrl}/api/public/session/validate`, {
+      headers: { ...sessionHeaders() },
     })
   },
 }
